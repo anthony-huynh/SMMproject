@@ -27,6 +27,24 @@ TEST(SixMensMorrisBoardTest, SetBoardTest){
 
 TEST(SixMensMorrisBoardTest, ResetBoardTest){
     // Needs to test that resetting to default board is correct
+    CSixMensMorrisBoard board;
+    board.Place('R', 1);
+    board.ResetBoard();
+    EXPECT_EQ(std::string(board), 
+">RU:6 RC:0  WU:6 WC:0\n"
+"o---------o---------o      0---1---2\n"
+"|         |         |      | 3-4-5 |\n"
+"|         |         |      6-7   8-9\n"
+"|    o----o----o    |      | A-B-C |\n"
+"|    |         |    |      D---E---F\n"
+"|    |         |    |        LEGEND\n"
+"o----o         o----o\n"
+"|    |         |    |\n"
+"|    |         |    |\n"
+"|    o----o----o    |\n"
+"|         |         |\n"
+"|         |         |\n"
+"o---------o---------o\n");
 }
 
 TEST(SixMensMorrisBoardTest, PlacementTest){
