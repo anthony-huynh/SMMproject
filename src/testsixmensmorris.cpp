@@ -1,6 +1,8 @@
 #include <gtest/gtest.h> 	  			 	 
 #include "SixMensMorrisBoard.h"
 
+//USE MACROS 
+
 TEST(SixMensMorrisBoardTest, DefaultBoardTest){
     // Needs to test that default board is correct
     CSixMensMorrisBoard board;
@@ -23,10 +25,32 @@ TEST(SixMensMorrisBoardTest, DefaultBoardTest){
 
 TEST(SixMensMorrisBoardTest, SetBoardTest){
     // Needs to test that setting board is correct
+    const char Positions[16] = {  SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W
+    };
+
+    const char Previous[16] = {   SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W
+
+    };
+    const int unplaced[SIX_MENS_MORRIS_PLAYERS] = {2, 2};
+
+    CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_W, unplaced, Positions, Previous);
+
+    EXPECT_EQ(board.PlayerAtPosition(1), SIX_MENS_MORRIS_PLAYER_R);
+    EXPECT_EQ(board.PlayerAtPosition(13), SIX_MENS_MORRIS_EMPTY);
+    EXPECT_EQ(board.PlayerAtPosition(15), SIX_MENS_MORRIS_PLAYER_W);
+
 }
 
 TEST(SixMensMorrisBoardTest, ResetBoardTest){
-    // Needs to test that resetting to default board is correct
+    // Needs to test that resetting to default board is correct // check unplacedpieces
     CSixMensMorrisBoard board;
     board.Place('R', 1);
     board.ResetBoard();
@@ -48,7 +72,14 @@ TEST(SixMensMorrisBoardTest, ResetBoardTest){
 }
 
 TEST(SixMensMorrisBoardTest, PlacementTest){
-    // Needs to test that normal placement is correct
+    // Needs to test that normal placement is correct //make sure we cant remove anything during the placement phase
+    CSixMensMorrisBoard board;
+    EXPECT_TRUE(board.Place('R', 0));
+    EXPECT_FALSE(board.Place('W', 0));
+    EXPECT_TRUE(board.Place('W', 1));
+    EXPECT_TRUE(board.Place('R', 6));
+    EXPECT_TRUE(board.Place('W', 10)); //D is 13?
+    EXPECT_FALSE(board.Place('W', 14)); //E is 14?
 }
 
 TEST(SixMensMorrisBoardTest, PlacementMillTest){
