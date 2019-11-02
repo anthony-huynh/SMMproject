@@ -75,6 +75,7 @@ void CSixMensMorrisBoard::ResetBoard(){
         DPositions[Index] = SIX_MENS_MORRIS_EMPTY;
         DPreviousPositions[Index] = SIX_MENS_MORRIS_EMPTY;
     }
+    DTurn = SIX_MENS_MORRIS_PLAYER_R;
 }
 
 char CSixMensMorrisBoard::PlayerTurn() const{
@@ -99,7 +100,7 @@ int CSixMensMorrisBoard::UnplacedPieces(char player) const{
 }
 
 bool CSixMensMorrisBoard::GameOver() const{
-    return DTurn != SIX_MENS_MORRIS_PLAYER_R and DTurn != SIX_MENS_MORRIS_PLAYER_W;
+    return DTurn != SIX_MENS_MORRIS_PLAYER_R and DTurn != SIX_MENS_MORRIS_PLAYER_W; //if its neither of their turns
 }
 
 std::string CSixMensMorrisBoard::ToString() const{
@@ -166,16 +167,19 @@ CSixMensMorrisBoard::operator std::string() const{
     return OutStream.str();
 }
 
+
+//use this to change turns: DTurn = DTurn == SIX_MENS_MORRIS_PLAYER_R ? SIX_MENS_MORRIS_PLAYER_W : SIX_MENS_MORRIS_PLAYER_R;
 bool CSixMensMorrisBoard::Place(char player, int where){
     int UnplacedIndex = player == SIX_MENS_MORRIS_PLAYER_R ? 0 : 1;
     if((player == DTurn) and DUnplacedPieces[UnplacedIndex]){
-        if((0 <= where) and (where < SIX_MENS_MORRIS_POSITIONS)){
+        if((0 <= where) and (where < SIX_MENS_MORRIS_POSITIONS)){ //if where is in range
             if(SIX_MENS_MORRIS_EMPTY == DPositions[where]){
                 for(int Index = 0; Index < SIX_MENS_MORRIS_POSITIONS; Index++){
                     DPreviousPositions[Index] = DPositions[Index];       
                 }
                 DPositions[where] = player;
                 DUnplacedPieces[UnplacedIndex]--;
+                DTurn = DTurn == SIX_MENS_MORRIS_PLAYER_R ? SIX_MENS_MORRIS_PLAYER_W : SIX_MENS_MORRIS_PLAYER_R;
                 return true;
             }
         }
@@ -190,7 +194,8 @@ bool CSixMensMorrisBoard::CanRemove(char player){
 bool CSixMensMorrisBoard::CanMove(char player, int where){
     if((SIX_MENS_MORRIS_PLAYER_R == player) or (SIX_MENS_MORRIS_PLAYER_W == player)){
         if((0 <= where) and (where < SIX_MENS_MORRIS_POSITIONS)){
-            if(player == DPositions[where]){
+//            if(player == DPositions[where]){ //change to if dpositions[where] == empty? 
+            if (SIX_MENS_MORRIS_EMPTY == (DPositions[where])) {
                 for(int Index = 0; Index < SIX_MENS_MORRIS_POSITIONS; Index++){     
                     if(SIX_MENS_MORRIS_EMPTY == (DPositions[Index]) and AdjacentPositions(where,Index)){
                         return true;
@@ -206,7 +211,7 @@ bool CSixMensMorrisBoard::Move(char player, int from, int to){
     int UnplacedIndex = player == SIX_MENS_MORRIS_PLAYER_R ? 0 : 1;
     if((player == DTurn) and (0 == DUnplacedPieces[UnplacedIndex])){
         if((0 <= from) and (from < SIX_MENS_MORRIS_POSITIONS)){
-            if(player == DPositions[from]){
+            if(player == DPositions[from]){ //what is this?
                 if((0 <= to) and (to < SIX_MENS_MORRIS_POSITIONS) and (SIX_MENS_MORRIS_EMPTY ==  DPositions[to]) and AdjacentPositions(from, to)){
                     DPositions[to] = player;
                     DPositions[from] = SIX_MENS_MORRIS_EMPTY;
