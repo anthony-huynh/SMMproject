@@ -165,13 +165,26 @@ TEST(SixMensMorrisBoardTest, MoveTest){
     const int unplaced[SIX_MENS_MORRIS_PLAYERS] = {0, 0};
 
     CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
+
+    std::cout<<(std::string(board))<<std::endl;
+
+
+    EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 8));
     EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 12, 8)); //false bc not W's turn
+    EXPECT_TRUE(board.CanMove(SIX_MENS_MORRIS_PLAYER_R, 0));
     EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 1, 0));
     EXPECT_EQ(board.PlayerAtPosition(0), SIX_MENS_MORRIS_PLAYER_R);
+
+    std::cout<<(std::string(board))<<std::endl;
+
+    EXPECT_TRUE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 8));
     EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 12, 8));
     EXPECT_EQ(board.PlayerAtPosition(8), SIX_MENS_MORRIS_PLAYER_W);
+    EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_R, 13));
     EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 14, 13)); //false bc 13 is not empty
+    EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 12));
     EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 11, 12)); //false bc 11 is player R
+    EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 3));
     EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 6, 3)); //false bc 3 is not adjacent to 6
 
 }

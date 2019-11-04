@@ -196,11 +196,12 @@ bool CSixMensMorrisBoard::CanRemove(char player){
 
 bool CSixMensMorrisBoard::CanMove(char player, int where){
     if((SIX_MENS_MORRIS_PLAYER_R == player) or (SIX_MENS_MORRIS_PLAYER_W == player)){
-        if((0 <= where) and (where < SIX_MENS_MORRIS_POSITIONS)){
+        if((0 <= where) and (where < SIX_MENS_MORRIS_POSITIONS) and (player == DTurn)){ //!!!!!!!!!!!!!!!!!!!!!!!!!!
 //            if(player == DPositions[where]){ //change to if dpositions[where] == empty? 
             if (SIX_MENS_MORRIS_EMPTY == (DPositions[where])) {
                 for(int Index = 0; Index < SIX_MENS_MORRIS_POSITIONS; Index++){     
-                    if(SIX_MENS_MORRIS_EMPTY == (DPositions[Index]) and AdjacentPositions(where,Index)){
+//                    if(SIX_MENS_MORRIS_EMPTY == (DPositions[Index]) and AdjacentPositions(where,Index)){
+                    if(player == (DPositions[Index]) and AdjacentPositions(where,Index)){    
                         return true;
                     }
                 }
@@ -253,7 +254,7 @@ bool CSixMensMorrisBoard::Remove(char player, int from){
                         if(From == To){
                             continue;    
                         }
-                        if((SIX_MENS_MORRIS_EMPTY == DPositions[To]) and AdjacentPositions(From,To)){
+                        if((SIX_MENS_MORRIS_EMPTY == DPositions[To]) and AdjacentPositions(From,To)){ 
                             HasMove = true;
                             break;
                         }
