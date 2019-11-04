@@ -69,39 +69,80 @@ TEST(SixMensMorrisBoardTest, ResetBoardTest){
 "|         |         |\n"
 "|         |         |\n"
 "o---------o---------o\n");
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_W), 6);
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_R), 6);
+
 }
 
 TEST(SixMensMorrisBoardTest, PlacementTest){
-    // Needs to test that normal placement is correct //make sure we cant remove anything during the placement phase
+    // Needs to test that normal placement is correct /
+    // has been adjusted for the change of ability to remove once a mill has been created after placing
     CSixMensMorrisBoard board;
-    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 0));
-    EXPECT_FALSE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 0));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 0)); 
+    EXPECT_EQ(board.PlayerAtPosition(0), SIX_MENS_MORRIS_PLAYER_R); //position 0 should now be R
+    EXPECT_FALSE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 0)); //false because 0 is not an empty position
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 1));
+    EXPECT_EQ(board.PlayerAtPosition(1), SIX_MENS_MORRIS_PLAYER_W); 
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 6));
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 10));
-    EXPECT_FALSE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 14)); 
+    EXPECT_FALSE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 14)); //false because it is not w/s turn
+    EXPECT_FALSE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_W)); //mill has not been formed, cannot remove
+    EXPECT_FALSE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_R)); //mill has not been formed, cannot remove
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 13)); //MILL HAS BEEN CREATED, TURN SHOULD STAY R ***************************
+
+//    std::cout<<(std::string(board))<<std::endl;
+
+//    std::cout<<(board.PlayerTurn())<<std::endl; // SHOULD PRINT R
+
+    EXPECT_TRUE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_R)); 
+    EXPECT_TRUE(board.Remove(SIX_MENS_MORRIS_PLAYER_R, 1)); 
+
+    EXPECT_EQ(board.PlayerAtPosition(1), SIX_MENS_MORRIS_EMPTY); // position 1 should now be empty
+
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 2));
+
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 9));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 15));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 11));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 14));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 5));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 3));
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_R), 0);
+    EXPECT_FALSE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 1)); //no more unplaced pieces, cannot place
 }
 
 TEST(SixMensMorrisBoardTest, PlacementMillTest){
     // Needs to test that placement creating a mill is correct with removal
+
+    //NEEDS TO BE ADJUSTED FOR FIXED REMOVE FUNCTION
+
     CSixMensMorrisBoard board;
     board.Place(SIX_MENS_MORRIS_PLAYER_R, 0);
     board.Place(SIX_MENS_MORRIS_PLAYER_W, 1);
     board.Place(SIX_MENS_MORRIS_PLAYER_R, 6);
     board.Place(SIX_MENS_MORRIS_PLAYER_W, 2);
-    board.Place(SIX_MENS_MORRIS_PLAYER_R, 13);
-    board.Place(SIX_MENS_MORRIS_PLAYER_W, 9);
-    board.Place(SIX_MENS_MORRIS_PLAYER_R, 10);
-    board.Place(SIX_MENS_MORRIS_PLAYER_W, 3);
-    board.Place(SIX_MENS_MORRIS_PLAYER_R, 4);
-    board.Place(SIX_MENS_MORRIS_PLAYER_W, 5);
-    board.Place(SIX_MENS_MORRIS_PLAYER_R, 12);
-    board.Place(SIX_MENS_MORRIS_PLAYER_W, 15);
+    board.Place(SIX_MENS_MORRIS_PLAYER_R, 13); //MILL CREATED, MUST REMOVE PIECE FROM W TO CONTINUE PLACEMENT
 
-    EXPECT_TRUE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_R)); //is false because our millcreated isnt working?
-    EXPECT_FALSE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_W));
-    board.Remove(SIX_MENS_MORRIS_PLAYER_W, 15);
-    EXPECT_FALSE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_W));
+    EXPECT_EQ(board.PlayerTurn(), SIX_MENS_MORRIS_PLAYER_R); //IT IS R'S TURN BECAUSE A MILL HAS FORMED
+
+    EXPECT_TRUE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_R)); //can remove bc R has created a mill
+    EXPECT_TRUE(board.Remove(SIX_MENS_MORRIS_PLAYER_R, 1));
+    EXPECT_EQ(board.PlayerAtPosition(1), SIX_MENS_MORRIS_EMPTY); //should be empty after we remove W from 1
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 9)); 
+
+
+
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 10));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 3));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 4));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 5));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 12));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 15));
+    
+    EXPECT_TRUE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_W)); //true because mill formed by W
+    EXPECT_FALSE(board.Remove(SIX_MENS_MORRIS_PLAYER_W, 15)); //15 is not R, it's W
+    EXPECT_TRUE(board.Remove(SIX_MENS_MORRIS_PLAYER_W, 13));
+    EXPECT_FALSE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_W)); //false because the mill has now been broken.
 
 }
 
@@ -131,7 +172,8 @@ TEST(SixMensMorrisBoardTest, MoveTest){
     EXPECT_EQ(board.PlayerAtPosition(8), SIX_MENS_MORRIS_PLAYER_W);
     EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 14, 13)); //false bc 13 is not empty
     EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 11, 12)); //false bc 11 is player R
-    
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 6, 3)); //false bc 3 is not adjacent to 6
+
 }
 
 TEST(SixMensMorrisBoardTest, MoveMillTest){
