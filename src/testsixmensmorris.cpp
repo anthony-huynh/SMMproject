@@ -52,7 +52,7 @@ TEST(SixMensMorrisBoardTest, SetBoardTest){
 TEST(SixMensMorrisBoardTest, ResetBoardTest){
     // Needs to test that resetting to default board is correct // check unplacedpieces
     CSixMensMorrisBoard board;
-    board.Place('R', 1);
+    board.Place(SIX_MENS_MORRIS_PLAYER_R, 1);
     board.ResetBoard();
     EXPECT_EQ(std::string(board), 
 ">RU:6 RC:0  WU:6 WC:0\n"
@@ -74,20 +74,64 @@ TEST(SixMensMorrisBoardTest, ResetBoardTest){
 TEST(SixMensMorrisBoardTest, PlacementTest){
     // Needs to test that normal placement is correct //make sure we cant remove anything during the placement phase
     CSixMensMorrisBoard board;
-    EXPECT_TRUE(board.Place('R', 0));
-    EXPECT_FALSE(board.Place('W', 0));
-    EXPECT_TRUE(board.Place('W', 1));
-    EXPECT_TRUE(board.Place('R', 6));
-    EXPECT_TRUE(board.Place('W', 10)); //D is 13?
-    EXPECT_FALSE(board.Place('W', 14)); //E is 14?
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 0));
+    EXPECT_FALSE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 0));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 1));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 6));
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 10));
+    EXPECT_FALSE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 14)); 
 }
 
 TEST(SixMensMorrisBoardTest, PlacementMillTest){
     // Needs to test that placement creating a mill is correct with removal
+    CSixMensMorrisBoard board;
+    board.Place(SIX_MENS_MORRIS_PLAYER_R, 0);
+    board.Place(SIX_MENS_MORRIS_PLAYER_W, 1);
+    board.Place(SIX_MENS_MORRIS_PLAYER_R, 6);
+    board.Place(SIX_MENS_MORRIS_PLAYER_W, 2);
+    board.Place(SIX_MENS_MORRIS_PLAYER_R, 13);
+    board.Place(SIX_MENS_MORRIS_PLAYER_W, 9);
+    board.Place(SIX_MENS_MORRIS_PLAYER_R, 10);
+    board.Place(SIX_MENS_MORRIS_PLAYER_W, 3);
+    board.Place(SIX_MENS_MORRIS_PLAYER_R, 4);
+    board.Place(SIX_MENS_MORRIS_PLAYER_W, 5);
+    board.Place(SIX_MENS_MORRIS_PLAYER_R, 12);
+    board.Place(SIX_MENS_MORRIS_PLAYER_W, 15);
+
+    EXPECT_TRUE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_R)); //is false because our millcreated isnt working?
+    EXPECT_FALSE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_W));
+    board.Remove(SIX_MENS_MORRIS_PLAYER_W, 15);
+    EXPECT_FALSE(board.CanRemove(SIX_MENS_MORRIS_PLAYER_W));
+
 }
 
 TEST(SixMensMorrisBoardTest, MoveTest){
     // Needs to test that movement is correct
+    const char Positions[16] = {  SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W
+    };
+
+    const char Previous[16] = {   SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W
+
+    };
+    const int unplaced[SIX_MENS_MORRIS_PLAYERS] = {0, 0};
+
+    CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 12, 8)); //false bc not W's turn
+    EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 1, 0));
+    EXPECT_EQ(board.PlayerAtPosition(0), SIX_MENS_MORRIS_PLAYER_R);
+    EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 12, 8));
+    EXPECT_EQ(board.PlayerAtPosition(8), SIX_MENS_MORRIS_PLAYER_W);
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 14, 13)); //false bc 13 is not empty
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 11, 12)); //false bc 11 is player R
+    
 }
 
 TEST(SixMensMorrisBoardTest, MoveMillTest){
