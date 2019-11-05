@@ -1,7 +1,7 @@
 #include <iostream> 	  			 	 
 #include <cctype>
 #include "SixMensMorrisBoard.h"
-
+// thien ver
 int InputPosition();
 
 int main(int argc, char *argv[]){
