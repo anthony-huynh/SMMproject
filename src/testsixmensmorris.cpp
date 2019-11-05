@@ -166,7 +166,7 @@ TEST(SixMensMorrisBoardTest, MoveTest){
 
     CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
 
-    //std::cout<<(std::string(board))<<std::endl;
+//    std::cout<<(std::string(board))<<std::endl;
 
 
     EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 8));
@@ -191,6 +191,37 @@ TEST(SixMensMorrisBoardTest, MoveTest){
 
 TEST(SixMensMorrisBoardTest, MoveMillTest){
     // Needs to test that movement creating a mill is correct with removal
+    const char Positions[16] = {  SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W
+    };
+
+    const char Previous[16] = {   SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W
+
+    };
+    const int unplaced[SIX_MENS_MORRIS_PLAYERS] = {0, 0};
+
+    CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
+
+    EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 6, 0)); //MILL CREATED, BUT TURN DIDN'T CHANGE
+
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 4, 3)); //SHOULD NOT BE ABLE TO MOVE- NOT W'S TURN
+
+    EXPECT_TRUE(board.Remove(SIX_MENS_MORRIS_PLAYER_R, 7));
+    EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 4, 3));
+    EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 0, 6)); //PREVIOUS MILL UNFORMED
+    EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 3, 7));
+    EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 6, 0)); //SAME MILL RECREATED
+    
+    EXPECT_TRUE(board.Remove(SIX_MENS_MORRIS_PLAYER_R, 7));
+
+
 }
                                        
 TEST(SixMensMorrisBoardTest, TwoPieceGameOverTest){

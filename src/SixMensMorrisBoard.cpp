@@ -34,12 +34,15 @@ bool CSixMensMorrisBoard::MillCreated(char player){
                                 {0x3, 0x7, 0xA},
                                 {0x5, 0x8, 0xC},
                                 {0x2, 0x9, 0xF}};
+
     for(int Index = 0; Index < 8; Index++){
+
         bool CurrentMill = true;
         bool PastMill = true;
         char CurrentFirst = DPositions[PotentialMills[Index][0]];
         char PastFirst = DPreviousPositions[PotentialMills[Index][0]];
-        if((CurrentFirst != PastFirst) or (CurrentFirst != player)){
+//        if((CurrentFirst != PastFirst) or (CurrentFirst != player)){ //first condition not needed
+        if (CurrentFirst != player) {
             continue;
         }
         for(int Inner = 1; Inner < 3; Inner++){
@@ -52,7 +55,6 @@ bool CSixMensMorrisBoard::MillCreated(char player){
             }
         }
         if(CurrentMill and not PastMill){
-//        if (CurrentMill and PastMill){
             return true;   
         }
     }
@@ -60,7 +62,7 @@ bool CSixMensMorrisBoard::MillCreated(char player){
 }
 
 bool CSixMensMorrisBoard::AdjacentPositions(int from, int to){
-    int Adjacents[SIX_MENS_MORRIS_POSITIONS] = {0x000A, 0x0015, 0x0202, 0x0090,
+    int Adjacents[SIX_MENS_MORRIS_POSITIONS] = {0x0042, 0x0015, 0x0202, 0x0090,
                                                 0x002A, 0x0110, 0x2081, 0x0448,
                                                 0x1220, 0x8104, 0x0880, 0x5400,
                                                 0x0900, 0x4040, 0xA800, 0x4200};
@@ -196,7 +198,7 @@ bool CSixMensMorrisBoard::CanRemove(char player){
 
 bool CSixMensMorrisBoard::CanMove(char player, int where){
     if((SIX_MENS_MORRIS_PLAYER_R == player) or (SIX_MENS_MORRIS_PLAYER_W == player)){
-        if((0 <= where) and (where < SIX_MENS_MORRIS_POSITIONS) and (player == DTurn)){ //!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if((0 <= where) and (where < SIX_MENS_MORRIS_POSITIONS) and (player == DTurn)){ 
 //            if(player == DPositions[where]){ //change to if dpositions[where] == empty? 
             if (SIX_MENS_MORRIS_EMPTY == (DPositions[where])) {
                 for(int Index = 0; Index < SIX_MENS_MORRIS_POSITIONS; Index++){     
@@ -217,9 +219,14 @@ bool CSixMensMorrisBoard::Move(char player, int from, int to){
         if((0 <= from) and (from < SIX_MENS_MORRIS_POSITIONS)){
             if(player == DPositions[from]){
                 if((0 <= to) and (to < SIX_MENS_MORRIS_POSITIONS) and (SIX_MENS_MORRIS_EMPTY ==  DPositions[to]) and AdjacentPositions(from, to)){
+                    for(int Index = 0; Index < SIX_MENS_MORRIS_POSITIONS; Index++){ //RECORD PREVIOUS POSITIONS
+                        DPreviousPositions[Index] = DPositions[Index];       
+                    }
+                    
                     DPositions[to] = player;
                     DPositions[from] = SIX_MENS_MORRIS_EMPTY;
-                    if(not MillCreated(player)){
+                    
+                    if (!(MillCreated(DTurn))){ 
                         DTurn = DTurn == SIX_MENS_MORRIS_PLAYER_R ? SIX_MENS_MORRIS_PLAYER_W : SIX_MENS_MORRIS_PLAYER_R;
                     }
                     return true;
