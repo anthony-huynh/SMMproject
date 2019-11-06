@@ -21,6 +21,16 @@ TEST(SixMensMorrisBoardTest, DefaultBoardTest){
 "|         |         |\n"
 "|         |         |\n"
 "o---------o---------o\n");
+    EXPECT_EQ(board.PlayerTurn(), SIX_MENS_MORRIS_PLAYER_R);
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_R), 6);
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_W), 6);
+    EXPECT_EQ(board.PlayerAtPosition(0), SIX_MENS_MORRIS_EMPTY);
+    EXPECT_EQ(board.PlayerAtPosition(12), SIX_MENS_MORRIS_EMPTY);
+    EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_R, 3));
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 3, 4));
+    EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 8));
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 8, 12));
+    EXPECT_FALSE(board.GameOver());
 }
 
 TEST(SixMensMorrisBoardTest, SetBoardTest){
@@ -44,15 +54,29 @@ TEST(SixMensMorrisBoardTest, SetBoardTest){
     CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_W, unplaced, Positions, Previous);
 
     EXPECT_EQ(board.PlayerAtPosition(1), SIX_MENS_MORRIS_PLAYER_R);
+    EXPECT_EQ(board.PlayerAtPosition(2), SIX_MENS_MORRIS_PLAYER_R);
+    EXPECT_EQ(board.PlayerAtPosition(5), SIX_MENS_MORRIS_PLAYER_R);
+    EXPECT_EQ(board.PlayerAtPosition(6), SIX_MENS_MORRIS_PLAYER_R);
     EXPECT_EQ(board.PlayerAtPosition(13), SIX_MENS_MORRIS_EMPTY);
     EXPECT_EQ(board.PlayerAtPosition(15), SIX_MENS_MORRIS_PLAYER_W);
+    EXPECT_EQ(board.PlayerAtPosition(7), SIX_MENS_MORRIS_PLAYER_W);
+    EXPECT_EQ(board.PlayerAtPosition(12), SIX_MENS_MORRIS_PLAYER_W);
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_R), 2);
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_W), 2);
+    EXPECT_EQ(board.PlayerTurn(), SIX_MENS_MORRIS_PLAYER_W);
+    EXPECT_FALSE(board.GameOver());
 
 }
 
 TEST(SixMensMorrisBoardTest, ResetBoardTest){
     // Needs to test that resetting to default board is correct // check unplacedpieces
     CSixMensMorrisBoard board;
-    board.Place(SIX_MENS_MORRIS_PLAYER_R, 1);
+
+    EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 1));
+    EXPECT_EQ(board.PlayerAtPosition(1), SIX_MENS_MORRIS_PLAYER_R);
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_R), 5);
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_W), 6);
+
     board.ResetBoard();
     EXPECT_EQ(std::string(board), 
 ">RU:6 RC:0  WU:6 WC:0\n"
@@ -69,6 +93,10 @@ TEST(SixMensMorrisBoardTest, ResetBoardTest){
 "|         |         |\n"
 "|         |         |\n"
 "o---------o---------o\n");
+
+
+    EXPECT_EQ(board.PlayerTurn(), SIX_MENS_MORRIS_PLAYER_R);
+    EXPECT_EQ(board.PlayerAtPosition(1), SIX_MENS_MORRIS_EMPTY);
     EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_W), 6);
     EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_R), 6);
 
@@ -101,6 +129,7 @@ TEST(SixMensMorrisBoardTest, PlacementTest){
 
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 2));
 
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 6, 7)); //not able to move during plaement phase
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 9));
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 15));
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 11));
@@ -108,6 +137,7 @@ TEST(SixMensMorrisBoardTest, PlacementTest){
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 5));
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 3));
     EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_R), 0);
+    EXPECT_EQ(board.UnplacedPieces(SIX_MENS_MORRIS_PLAYER_W), 0);
     EXPECT_FALSE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 1)); //no more unplaced pieces, cannot place
 }
 
@@ -131,7 +161,8 @@ TEST(SixMensMorrisBoardTest, PlacementMillTest){
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 9)); 
 
 
-
+//    std::cout<<(std::string(board))<<std::endl;
+    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 6, 7)); //cannot move during placement
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 10));
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_W, 3));
     EXPECT_TRUE(board.Place(SIX_MENS_MORRIS_PLAYER_R, 4));
