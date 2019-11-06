@@ -320,16 +320,23 @@ TEST(SixMensMorrisBoardTest, NoMoveGameOverTest){
 
     const int unplaced[SIX_MENS_MORRIS_PLAYERS] = {0, 0};
 
-    CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
-//    std::cout<<(std::string(board))<<std::endl;
-    board.Move(SIX_MENS_MORRIS_PLAYER_R, 0, 1);
-//    std::cout<<(std::string(board))<<std::endl;
+            CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
+             std::cout<<(std::string(board))<<std::endl;
+                 EXPECT_FALSE(board.GameOver());
 
-    board.Move(SIX_MENS_MORRIS_PLAYER_W, 4, 5);
-    board.Move(SIX_MENS_MORRIS_PLAYER_W, 5, 4);
-    board.Move(SIX_MENS_MORRIS_PLAYER_W, 12, 8);
+             board.Move(SIX_MENS_MORRIS_PLAYER_R, 0, 1);
+
+            std::cout<<(std::string(board))<<std::endl;
+
+            EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 4, 5));
+              EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 5, 4));
+                EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 12, 8));
+           
+
 
     EXPECT_TRUE(board.GameOver());
+
+   
 }
 
 TEST(SixMensMorrisBoardTest, BadParametersTest){
@@ -347,11 +354,12 @@ TEST(SixMensMorrisBoardTest, BadParametersTest){
 
     const int unplaced[SIX_MENS_MORRIS_PLAYERS] = {0, 0};
 
-    CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
+            CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
+             EXPECT_FALSE(board.Remove(SIX_MENS_MORRIS_PLAYER_R,17));
+             EXPECT_EQ(board.PlayerAtPosition(20),'\0');
+            EXPECT_EQ(board.UnplacedPieces('Q'),-1);
 
-    EXPECT_FALSE(board.Remove(SIX_MENS_MORRIS_PLAYER_R,17));
-    EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 0, 15));
-    EXPECT_EQ(board.PlayerAtPosition(20),'\0');
-    EXPECT_EQ(board.UnplacedPieces('Q'),-1);
+
+
 }
 
