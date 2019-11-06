@@ -263,7 +263,6 @@ bool CSixMensMorrisBoard::Move(char player, int from, int to){
     int UnplacedIndex = player == SIX_MENS_MORRIS_PLAYER_R ? 0 : 1;
     if((player == DTurn) and (0 == DUnplacedPieces[UnplacedIndex])){
         if((0 <= from) and (from < SIX_MENS_MORRIS_POSITIONS)){
-            // if(player == DPositions[from])
             if(player == DPositions[from]){
                 if((0 <= to) and (to < SIX_MENS_MORRIS_POSITIONS) and (SIX_MENS_MORRIS_EMPTY ==  DPositions[to]) and AdjacentPositions(from, to)){
                     for(int Index = 0; Index < SIX_MENS_MORRIS_POSITIONS; Index++){ //RECORD PREVIOUS POSITIONS
@@ -273,10 +272,39 @@ bool CSixMensMorrisBoard::Move(char player, int from, int to){
                     DPositions[to] = player;
                     DPositions[from] = SIX_MENS_MORRIS_EMPTY;
                     
+
+
+                    //HASTURN TEST
+                    char OtherPlayer = DTurn == SIX_MENS_MORRIS_PLAYER_R ? SIX_MENS_MORRIS_PLAYER_W : SIX_MENS_MORRIS_PLAYER_R;
+                    bool HasMove = false;
+
+                    for(int From = 0; From < SIX_MENS_MORRIS_POSITIONS; From++){
+                    if(DPositions[From] == OtherPlayer){
+                        for(int To = 0; To < SIX_MENS_MORRIS_POSITIONS; To++){
+                            if(From == To){
+                                continue;    
+                            }
+                            if((SIX_MENS_MORRIS_EMPTY == DPositions[To]) and AdjacentPositions(From,To)){ 
+                                HasMove = true;
+                                break;
+                            }
+                        }
+                        if(HasMove){
+                            break;   
+                        }
+                    }
+                    }
+
+                    if(!(HasMove)){ //if there are no possible moves for otherplayer, game over
+                        DTurn = tolower(DTurn);
+                        return true;   
+                    }
+
+
                     if (!(MillCreated(DTurn))){ 
                         DTurn = DTurn == SIX_MENS_MORRIS_PLAYER_R ? SIX_MENS_MORRIS_PLAYER_W : SIX_MENS_MORRIS_PLAYER_R;
                     }
-                    
+
                     return true;
                 }
             }
