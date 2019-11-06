@@ -171,13 +171,13 @@ TEST(SixMensMorrisBoardTest, MoveTest){
 
     EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 8));
     EXPECT_FALSE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 12, 8)); //false bc not W's turn
-    EXPECT_TRUE(board.CanMove(SIX_MENS_MORRIS_PLAYER_R, 0));
+    EXPECT_TRUE(board.CanMove(SIX_MENS_MORRIS_PLAYER_R, 1));
     EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_R, 1, 0));
     EXPECT_EQ(board.PlayerAtPosition(0), SIX_MENS_MORRIS_PLAYER_R);
 
-    //std::cout<<(std::string(board))<<std::endl;
+//    std::cout<<(std::string(board))<<std::endl;
 
-    EXPECT_TRUE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 8));
+    EXPECT_TRUE(board.CanMove(SIX_MENS_MORRIS_PLAYER_W, 12));
     EXPECT_TRUE(board.Move(SIX_MENS_MORRIS_PLAYER_W, 12, 8));
     EXPECT_EQ(board.PlayerAtPosition(8), SIX_MENS_MORRIS_PLAYER_W);
     EXPECT_FALSE(board.CanMove(SIX_MENS_MORRIS_PLAYER_R, 13));
@@ -221,11 +221,57 @@ TEST(SixMensMorrisBoardTest, MoveMillTest){
     
     EXPECT_TRUE(board.Remove(SIX_MENS_MORRIS_PLAYER_R, 7));
 
+//    std::cout<<(std::string(board))<<std::endl;
 
 }
                                        
 TEST(SixMensMorrisBoardTest, TwoPieceGameOverTest){
     // Needs to test that game over is correct when only two pieces left
+    const char Positions[16] = {  SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_EMPTY
+    };
+
+    const char Previous[16] = {  SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_EMPTY
+    };
+        const int unplaced[SIX_MENS_MORRIS_PLAYERS] = {0, 0};
+            CSixMensMorrisBoard board(SIX_MENS_MORRIS_PLAYER_R, unplaced, Positions, Previous);
+            board.Remove(SIX_MENS_MORRIS_PLAYER_R,6);
+
+    EXPECT_TRUE(board.GameOver());
+
+
+    const char PositionsA[16] = {  SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W
+    };
+
+    const char PreviousA[16] = {   SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_W, SIX_MENS_MORRIS_PLAYER_W,
+                        SIX_MENS_MORRIS_EMPTY, SIX_MENS_MORRIS_PLAYER_R, SIX_MENS_MORRIS_PLAYER_W
+
+    };
+    const int unplacedA[SIX_MENS_MORRIS_PLAYERS] = {0, 0};
+
+    CSixMensMorrisBoard boardA(SIX_MENS_MORRIS_PLAYER_R, unplacedA, PositionsA, PreviousA);
+
+    boardA.Remove(SIX_MENS_MORRIS_PLAYER_R,7);
+    EXPECT_FALSE(boardA.GameOver());
+
+
+    CSixMensMorrisBoard boardB;
+    EXPECT_FALSE(boardB.GameOver());
+
 }
 
 TEST(SixMensMorrisBoardTest, NoMoveGameOverTest){
